@@ -4,3 +4,6 @@
 [submodule "plugin/Chart.js"]
 	path = plugin/Chart.js
 	url = git@github.com:chartjs/Chart.js.git
+[submodule "plugin/reveal.js-plugins"]
+	path = plugin/reveal.js-plugins
+	url = git@github.com:YongJieYongJie/reveal.js-plugins.git
