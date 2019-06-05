@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>reveal.js</title>
+
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/white.css">
+        <link rel="stylesheet" href="lib/css/fade_in_then_out_overlap.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/monokai.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+         var link = document.createElement( 'link' );
+         link.rel = 'stylesheet';
+         link.type = 'text/css';
+         link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+         document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>Slide 1</section>
+                <section>Slide 2</section>
+                <section>
+                    <canvas id="my-chart-1"></canvas>
+                </section>
+                <section data-background-iframe="https://news.ycombinator.com"></section>
+                <section>
+                    <p class="fragment step-fade-in-then-out">Fragment 1</p>
+                    <p class="fragment step-fade-in-then-out">Fragment 2</p>
+                    <p class="fragment step-fade-in-then-out">Fragment 3</p>
+                </section>
+            </div>
+        </div>
+
+        <script src="js/reveal.js"></script>
+
+        <script>
+         // More info about config & dependencies:
+         // - https://github.com/hakimel/reveal.js#configuration
+         // - https://github.com/hakimel/reveal.js#dependencies
+         Reveal.initialize({
+             dependencies: [
+                 { src: 'plugin/x-frame-bypass/x-frame-bypass.js' },
+                 { src: 'plugin/markdown/marked.js' },
+                 { src: 'plugin/markdown/markdown.js' },
+	             { src: 'plugin/zoom-js/zoom.js', async: true },
+                 { src: 'plugin/notes/notes.js', async: true },
+                 { src: 'plugin/highlight/highlight.js', async: true },
+                 { src: 'plugin/reveal.js-plugins/chalkboard/chalkboard.js' },
+                 {
+                     src: 'plugin/Chart.js/dist/Chart.min.js',
+                     callback: () => {
+                         myCharts = [
+                             {
+                                 "canvasId": "my-chart-1",
+                                 "config": {
+                                     "data": {
+                                         "datasets": [
+                                             {
+                                                 "type": "scatter",
+                                                 "label": "Points",
+                                                 "borderColor": "rgb(54, 162, 235)",
+                                                 "backgroundColor": "rgb(54, 162, 235)",
+                                                 "data": [
+                                                     {"x": 1, "y": 2},
+                                                     {"x": 2, "y": 4}
+                                                 ],
+                                             },
+                                             {
+                                                 "type": "line",
+                                                 "label": "Line",
+                                                 "borderColor": "rgb(255, 205, 86)",
+                                                 "backgroundColor": "rgb(255, 205, 86)",
+                                                 "data": [
+                                                     {"x": 0, "y": 0},
+                                                     {"x": 4, "y": 4}
+                                                 ],
+                                                 "hidden": true,
+                                                 "radius": 1,
+                                                 "fill": false
+                                             }
+                                         ]
+                                     },
+                                     "options": {
+                                         "responsive": "true",
+                                         "title": {
+                                             "display": "true",
+                                             "text": "Chart Title"
+                                         },
+                                         "scales": {
+                                             "xAxes": [
+                                                 {
+                                                     "type": "linear",
+                                                     "position": "bottom",
+                                                     "ticks": { "min": 0, "max": 5 }
+                                                 }
+                                             ],
+                                             "yAxes": [
+                                                 {
+                                                     "type": "linear",
+                                                     "position": "left",
+                                                     "ticks": { "min": 0, "max": 5 }
+                                                 }
+                                             ]
+                                         }
+                                     }
+                                 }
+                             }
+                         ];
+                         
+                         for (var myChart of myCharts) {
+                             let canvas = document.getElementById(myChart.canvasId);
+                             let ctx = canvas.getContext("2d");
+                             canvas.chart = new Chart(ctx, myChart.config);
+                         }
+                         
+                         Reveal.addEventListener('slidechanged', function(e) {
+                             let canvas = e.currentSlide.querySelector('canvas');
+                             if (canvas) {
+                                 let chart = canvas.chart;
+                                 let config = canvas.chart.config;
+                                 chart.destroy();
+                                 setTimeout( () => { canvas.chart = new Chart(canvas, config); }, 500);
+                             }
+                         });
+                     }
+                 }
+             ],
+             preLoadIframes: true,
+             hash: true,
+             width: 1080,
+             keyboard: {
+	             67: function() { RevealChalkboard.toggleNotesCanvas() },	// toggle notes canvas when 'c' is pressed
+	             66: function() { RevealChalkboard.toggleChalkboard() },	// toggle chalkboard when 'b' is pressed
+	             46: function() { RevealChalkboard.clear() },	// clear chalkboard when 'DEL' is pressed
+	             8: function() { RevealChalkboard.reset() },	// reset chalkboard data on current slide when 'BACKSPACE' is pressed
+	             68: function() { RevealChalkboard.download() },	// downlad recorded chalkboard drawing when 'd' is pressed
+	         }
+         });
+        </script>
+    </body>
+</html>
